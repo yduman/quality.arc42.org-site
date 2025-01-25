@@ -3876,7 +3876,7 @@
   var PICKING_PREFIX = "#define PICKING_MODE\n";
   var SIZE_FACTOR_PER_ATTRIBUTE_TYPE = _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty({}, WebGL2RenderingContext.BOOL, 1), WebGL2RenderingContext.BYTE, 1), WebGL2RenderingContext.UNSIGNED_BYTE, 1), WebGL2RenderingContext.SHORT, 2), WebGL2RenderingContext.UNSIGNED_SHORT, 2), WebGL2RenderingContext.INT, 4), WebGL2RenderingContext.UNSIGNED_INT, 4), WebGL2RenderingContext.FLOAT, 4);
   var Program = /* @__PURE__ */ function() {
-    function Program2(gl, pickingBuffer, renderer) {
+    function Program2(gl, pickingBuffer, renderer2) {
       _classCallCheck(this, Program2);
       _defineProperty(this, "array", new Float32Array());
       _defineProperty(this, "constantArray", new Float32Array());
@@ -3894,7 +3894,7 @@
       this.isInstanced = "CONSTANT_ATTRIBUTES" in def;
       this.ATTRIBUTES_ITEMS_COUNT = getAttributesItemsCount(this.ATTRIBUTES);
       this.STRIDE = this.VERTICES * this.ATTRIBUTES_ITEMS_COUNT;
-      this.renderer = renderer;
+      this.renderer = renderer2;
       this.normalProgram = this.getProgramInfo("normal", gl, def.VERTEX_SHADER_SOURCE, def.FRAGMENT_SHADER_SOURCE, null);
       this.pickProgram = pickingBuffer ? this.getProgramInfo("pick", gl, PICKING_PREFIX + def.VERTEX_SHADER_SOURCE, PICKING_PREFIX + def.FRAGMENT_SHADER_SOURCE, pickingBuffer) : null;
       if (this.isInstanced) {
@@ -4158,11 +4158,11 @@
   }(Program);
   function createEdgeCompoundProgram(programClasses, drawLabel) {
     return /* @__PURE__ */ function() {
-      function EdgeCompoundProgram(gl, pickingBuffer, renderer) {
+      function EdgeCompoundProgram(gl, pickingBuffer, renderer2) {
         _classCallCheck(this, EdgeCompoundProgram);
         _defineProperty(this, "drawLabel", drawLabel);
         this.programs = programClasses.map(function(Program2) {
-          return new Program2(gl, pickingBuffer, renderer);
+          return new Program2(gl, pickingBuffer, renderer2);
         });
       }
       return _createClass(EdgeCompoundProgram, [{
@@ -5446,12 +5446,12 @@ void main() {
     throw new Error("Captor: could not extract delta from event.");
   }
   var Captor = /* @__PURE__ */ function(_TypedEventEmitter) {
-    function Captor2(container, renderer) {
+    function Captor2(container, renderer2) {
       var _this;
       _classCallCheck(this, Captor2);
       _this = _callSuper(this, Captor2);
       _this.container = container;
-      _this.renderer = renderer;
+      _this.renderer = renderer2;
       return _this;
     }
     _inherits(Captor2, _TypedEventEmitter);
@@ -5462,10 +5462,10 @@ void main() {
     return _objectSpread2(_objectSpread2({}, iter), {}, _defineProperty({}, key, DEFAULT_SETTINGS[key]));
   }, {});
   var MouseCaptor = /* @__PURE__ */ function(_Captor) {
-    function MouseCaptor2(container, renderer) {
+    function MouseCaptor2(container, renderer2) {
       var _this;
       _classCallCheck(this, MouseCaptor2);
-      _this = _callSuper(this, MouseCaptor2, [container, renderer]);
+      _this = _callSuper(this, MouseCaptor2, [container, renderer2]);
       _defineProperty(_this, "enabled", true);
       _defineProperty(_this, "draggedEvents", 0);
       _defineProperty(_this, "downStartTime", null);
@@ -5723,10 +5723,10 @@ void main() {
     return _objectSpread2(_objectSpread2({}, iter), {}, _defineProperty({}, key, DEFAULT_SETTINGS[key]));
   }, {});
   var TouchCaptor = /* @__PURE__ */ function(_Captor) {
-    function TouchCaptor2(container, renderer) {
+    function TouchCaptor2(container, renderer2) {
       var _this;
       _classCallCheck(this, TouchCaptor2);
-      _this = _callSuper(this, TouchCaptor2, [container, renderer]);
+      _this = _callSuper(this, TouchCaptor2, [container, renderer2]);
       _defineProperty(_this, "enabled", true);
       _defineProperty(_this, "isMoving", false);
       _defineProperty(_this, "hasMoved", false);
@@ -8046,14 +8046,14 @@ void main() {
 
   // src/q-graph/data/nodes.js
   var PROPERTY_NODES = [
-    { id: "efficient", label: "Efficient", type: "property" },
-    { id: "flexible", label: "Flexible", type: "property" },
-    { id: "reliable", label: "Reliable", type: "property" },
-    { id: "usable", label: "Usable", type: "property" },
-    { id: "operable", label: "Operable", type: "property" },
-    { id: "secure", label: "Secure", type: "property" },
-    { id: "safe", label: "Safe", type: "property" },
-    { id: "suitable", label: "Suitable", type: "property" }
+    { id: "efficient", label: "Efficient", type: "property", page: "/tag-efficient" },
+    { id: "flexible", label: "Flexible", type: "property", page: "/tag-flexible" },
+    { id: "reliable", label: "Reliable", type: "property", page: "/tag-reliable" },
+    { id: "usable", label: "Usable", type: "property", page: "/tag-usable" },
+    { id: "operable", label: "Operable", type: "property", page: "/tag-operable" },
+    { id: "secure", label: "Secure", type: "property", page: "/tag-secure" },
+    { id: "safe", label: "Safe", type: "property", page: "/tag-safe" },
+    { id: "suitable", label: "Suitable", type: "property", page: "/tag-suitable" }
   ];
   var QUALITY_NODES = [
     { id: "availability", label: "Availability", type: "quality" },
@@ -8169,14 +8169,19 @@ void main() {
   import_graphology_layout.circular.assign(graph);
   var settings = import_graphology_layout_forceatlas2.default.inferSettings(graph);
   import_graphology_layout_forceatlas2.default.assign(graph, { settings, iterations: 500 });
-  new Sigma$1(graph, document.getElementById("q-graph-container"), {
+  var renderer = new Sigma$1(graph, document.getElementById("q-graph-container"), {
     allowInvalidContainer: true,
     autoRescale: true,
     autoCenter: true
   });
+  renderer.on("doubleClickNode", (event) => {
+    const nodeId = event.node;
+    const page = graph.getNodeAttribute(nodeId, "page");
+    window.location.href = `${page}`;
+  });
   function createPropertyNodes() {
-    PROPERTY_NODES.forEach((node, idx) => {
-      graph.addNode(node.id, { label: node.label, size: 15, color: "green", x: idx + 1, y: idx + 1 });
+    PROPERTY_NODES.forEach((node) => {
+      graph.addNode(node.id, { label: node.label, size: 15, color: "green", qualityType: node.type, page: node.page });
     });
   }
   function createEdges() {

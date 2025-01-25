@@ -16,20 +16,26 @@ circular.assign(graph);
 const settings = forceAtlas2.inferSettings(graph);
 forceAtlas2.assign(graph, { settings, iterations: 500 });
 
-new Sigma(graph, document.getElementById("q-graph-container"), {
+const renderer = new Sigma(graph, document.getElementById("q-graph-container"), {
   allowInvalidContainer: true,
   autoRescale: true,
   autoCenter: true,
 });
 
+renderer.on("doubleClickNode", event => {
+    const nodeId = event.node;
+    const page = graph.getNodeAttribute(nodeId, "page");
+    window.location.href = `${page}`;
+})
+
 function createPropertyNodes() {
-  PROPERTY_NODES.forEach((node, idx) => {
-    graph.addNode(node.id, { label: node.label, size: 15, color: "green", x: idx + 1, y: idx + 1 });
+  PROPERTY_NODES.forEach(node => {
+    graph.addNode(node.id, { label: node.label, size: 15, color: "green", qualityType: node.type, page: node.page });
   });
 }
 
 function createEdges() {
-  ROOT_EDGES.forEach((edge) => {
+  ROOT_EDGES.forEach(edge => {
     graph.addEdge(edge.source, edge.target);
   });
 }

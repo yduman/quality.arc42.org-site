@@ -1,12 +1,12 @@
 export const PROPERTY_NODES = [
-  { id: "efficient", label: "Efficient", type: "property" },
-  { id: "flexible", label: "Flexible", type: "property" },
-  { id: "reliable", label: "Reliable", type: "property" },
-  { id: "usable", label: "Usable", type: "property" },
-  { id: "operable", label: "Operable", type: "property" },
-  { id: "secure", label: "Secure", type: "property" },
-  { id: "safe", label: "Safe", type: "property" },
-  { id: "suitable", label: "Suitable", type: "property" },
+  { id: "efficient", label: "Efficient", type: "property", page: "/tag-efficient" },
+  { id: "flexible", label: "Flexible", type: "property", page: "/tag-flexible" },
+  { id: "reliable", label: "Reliable", type: "property", page: "/tag-reliable" },
+  { id: "usable", label: "Usable", type: "property", page: "/tag-usable" },
+  { id: "operable", label: "Operable", type: "property", page: "/tag-operable" },
+  { id: "secure", label: "Secure", type: "property", page: "/tag-secure" },
+  { id: "safe", label: "Safe", type: "property", page: "/tag-safe" },
+  { id: "suitable", label: "Suitable", type: "property", page: "/tag-suitable" },
 ];
 
 export const QUALITY_NODES = [
