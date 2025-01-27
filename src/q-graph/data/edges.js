@@ -9,7 +9,7 @@ export const ROOT_EDGES = [
   { source: "quality-root", target: "suitable" },
 ];
 
-export const EDGES = [
+export const ALL_TINY_EDGES = [
   ...ROOT_EDGES,
   { source: "availability", target: "reliability" },
   { source: "availability", target: "reliable" },

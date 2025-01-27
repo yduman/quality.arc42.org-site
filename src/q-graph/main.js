@@ -1,41 +1,59 @@
-import { UndirectedGraph } from "graphology";
-import { Sigma } from "sigma";
+import { MultiGraph } from "graphology";
 import { circular } from "graphology-layout";
 import forceAtlas2 from "graphology-layout-forceatlas2";
+import { Sigma } from "sigma";
 
-import { PROPERTY_NODES, QUALITY_NODES } from "./data/nodes";
 import { ROOT_EDGES } from "./data/edges";
+import { PROPERTY_NODES } from "./data/nodes";
+import { registerGraphEvents } from "./events";
+import { createEdges, createNodes, createRootNode } from "./utils";
 
-const graph = new UndirectedGraph();
+// TODO: split different graphs into files in order to add the script tag in their appropriate page (needs also esbuild tweak)
+// Create Graph and its elements
+console.log(">>", window.location.pathname);
+const graph = new MultiGraph({name: "home", qualityType: "tiny"});
+graph.setAttribute("name", "home")
+graph.setAttribute("qualityType", "tiny")
 
-graph.addNode("quality-root", { label: "Quality", size: 20, x: 0, y: 0, color: "orange" });
-createPropertyNodes();
-createEdges();
+createRootNode(graph, "Quality", 25, "orange")
+createNodes(graph, PROPERTY_NODES);
+createEdges(graph, ROOT_EDGES);
 
+// Assign position and layout
 circular.assign(graph);
 const settings = forceAtlas2.inferSettings(graph);
-forceAtlas2.assign(graph, { settings, iterations: 500 });
+forceAtlas2.assign(graph, { settings: settings, iterations: 500 });
 
-const renderer = new Sigma(graph, document.getElementById("q-graph-container"), {
-  allowInvalidContainer: true,
-  autoRescale: true,
-  autoCenter: true,
-});
+// Render graph
 
-renderer.on("doubleClickNode", event => {
-    const nodeId = event.node;
-    const page = graph.getNodeAttribute(nodeId, "page");
-    window.location.href = `${page}`;
-})
+let renderer;
 
-function createPropertyNodes() {
-  PROPERTY_NODES.forEach(node => {
-    graph.addNode(node.id, { label: node.label, size: 15, color: "green", qualityType: node.type, page: node.page });
-  });
+if (window.location.pathname === "/") {
+  renderer = new Sigma(
+    graph,
+    document.getElementById("q-graph-container"),
+    {
+      allowInvalidContainer: true,
+      autoRescale: true,
+      autoCenter: true,
+    },
+  );
+} else if (window.location.pathname === "/full-quality-graph") {
+  // TODO(yduman): Check why this is not working
+  if (renderer !== undefined) {
+    renderer.kill()
+  }
+
+  renderer = new Sigma(
+    graph,
+    document.getElementById("full-q-graph-container"),
+    {
+      allowInvalidContainer: true,
+      autoRescale: true,
+      autoCenter: true,
+    },
+  );
 }
 
-function createEdges() {
-  ROOT_EDGES.forEach(edge => {
-    graph.addEdge(edge.source, edge.target);
-  });
-}
+// Register custom interactions
+registerGraphEvents(graph, renderer);
