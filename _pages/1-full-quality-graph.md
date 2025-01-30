@@ -13,4 +13,5 @@ hide: true
 * background of the [arc42 quality model](/articles/)  
 
 <div id="full-q-graph-container"></div>
+<script src="/assets/js/fullpage/main.js"></script>
 

@@ -8,10 +8,8 @@ import { PROPERTY_NODES } from "../data/nodes";
 import { registerGraphEvents } from "../events";
 import { createEdges, createNodes, createRootNode } from "../utils";
 
-console.log("asd");
-
 // Create Graph and its elements
-const graph = new MultiGraph({ name: "home", qualityType: "tiny" });
+const graph = new MultiGraph();
 graph.setAttribute("name", "home");
 graph.setAttribute("qualityType", "tiny");
 

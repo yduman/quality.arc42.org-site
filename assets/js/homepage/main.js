@@ -8454,8 +8454,7 @@ void main() {
   }
 
   // src/graphs/homepage/main.js
-  console.log("asd");
-  var graph = new import_graphology3.MultiGraph({ name: "home", qualityType: "tiny" });
+  var graph = new import_graphology3.MultiGraph();
   graph.setAttribute("name", "home");
   graph.setAttribute("qualityType", "tiny");
   createRootNode(graph, "Quality", 25, "orange");
