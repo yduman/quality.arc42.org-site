@@ -3415,10 +3415,10 @@
     }
   });
 
-  // src/q-graph/main.js
-  var import_graphology3 = __toESM(require_graphology_umd_min());
-  var import_graphology_layout = __toESM(require_graphology_layout());
-  var import_graphology_layout_forceatlas2 = __toESM(require_graphology_layout_forceatlas2());
+  // src/graphs/homepage/main.js
+  var import_graphology3 = __toESM(require_graphology_umd_min(), 1);
+  var import_graphology_layout = __toESM(require_graphology_layout(), 1);
+  var import_graphology_layout_forceatlas2 = __toESM(require_graphology_layout_forceatlas2(), 1);
 
   // node_modules/sigma/dist/inherits-d1a1e29b.esm.js
   function _toPrimitive(t, r) {
@@ -8042,7 +8042,7 @@ void main() {
     }]);
   }(TypedEventEmitter);
 
-  // src/q-graph/data/edges.js
+  // src/graphs/data/edges.js
   var ROOT_EDGES = [
     { source: "quality-root", target: "efficient" },
     { source: "quality-root", target: "flexible" },
@@ -8116,7 +8116,7 @@ void main() {
     { source: "usability", target: "usable" }
   ];
 
-  // src/q-graph/data/nodes.js
+  // src/graphs/data/nodes.js
   var PROPERTY_NODES = [
     {
       id: "efficient",
@@ -8411,12 +8411,14 @@ void main() {
   ];
   var ALL_TINY_NODES = [...PROPERTY_NODES, ...QUALITY_NODES];
 
-  // src/q-graph/events.js
-  var import_graphology = __toESM(require_graphology_umd_min());
+  // src/graphs/events.js
+  var import_graphology = __toESM(require_graphology_umd_min(), 1);
   function registerGraphEvents(graph2, renderer2) {
     const graphName = graph2.getAttribute("name");
     renderer2.on("doubleClickNode", (event) => {
-      window.location.href = `${graph2.getNodeAttribute(event.node, "page")}`;
+      if (event.node !== "quality-root") {
+        window.location.href = `${graph2.getNodeAttribute(event.node, "page")}`;
+      }
     });
     if (graphName === "home") {
       renderer2.on("clickStage", () => {
@@ -8425,8 +8427,8 @@ void main() {
     }
   }
 
-  // src/q-graph/utils.js
-  var import_graphology2 = __toESM(require_graphology_umd_min());
+  // src/graphs/utils.js
+  var import_graphology2 = __toESM(require_graphology_umd_min(), 1);
   function createRootNode(graph2, label, size, color) {
     graph2.addNode("quality-root", {
       label,
@@ -8451,8 +8453,8 @@ void main() {
     edges.forEach((edge) => graph2.addEdge(edge.source, edge.target));
   }
 
-  // src/q-graph/main.js
-  console.log(">>", window.location.pathname);
+  // src/graphs/homepage/main.js
+  console.log("asd");
   var graph = new import_graphology3.MultiGraph({ name: "home", qualityType: "tiny" });
   graph.setAttribute("name", "home");
   graph.setAttribute("qualityType", "tiny");
@@ -8462,30 +8464,14 @@ void main() {
   import_graphology_layout.circular.assign(graph);
   var settings = import_graphology_layout_forceatlas2.default.inferSettings(graph);
   import_graphology_layout_forceatlas2.default.assign(graph, { settings, iterations: 500 });
-  var renderer;
-  if (window.location.pathname === "/") {
-    renderer = new Sigma$1(
-      graph,
-      document.getElementById("q-graph-container"),
-      {
-        allowInvalidContainer: true,
-        autoRescale: true,
-        autoCenter: true
-      }
-    );
-  } else if (window.location.pathname === "/full-quality-graph") {
-    if (renderer !== void 0) {
-      renderer.kill();
+  var renderer = new Sigma$1(
+    graph,
+    document.getElementById("q-graph-container"),
+    {
+      allowInvalidContainer: true,
+      autoRescale: true,
+      autoCenter: true
     }
-    renderer = new Sigma$1(
-      graph,
-      document.getElementById("full-q-graph-container"),
-      {
-        allowInvalidContainer: true,
-        autoRescale: true,
-        autoCenter: true
-      }
-    );
-  }
+  );
   registerGraphEvents(graph, renderer);
 })();
