@@ -135,6 +135,7 @@ exclude:
   - package-lock.json
   - build.js
   - src/
+  - .prettierrc
 
 watch_exclude:
   - assets/js/fullpage # handled by esbuild
