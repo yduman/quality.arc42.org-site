@@ -8412,23 +8412,10 @@ void main() {
   var ALL_TINY_NODES = [...PROPERTY_NODES, ...QUALITY_NODES];
 
   // src/graphs/events.js
-  var import_graphology = __toESM(require_graphology_umd_min(), 1);
-  function registerGraphEvents(graph2, renderer2) {
-    const graphName = graph2.getAttribute("name");
-    renderer2.on("doubleClickNode", (event) => {
-      if (event.node !== "quality-root") {
-        window.location.href = `${graph2.getNodeAttribute(event.node, "page")}`;
-      }
-    });
-    if (graphName === "home") {
-      renderer2.on("clickStage", () => {
-        window.location.href = "/full-quality-graph";
-      });
-    }
-  }
+  var import_graphology2 = __toESM(require_graphology_umd_min(), 1);
 
   // src/graphs/utils.js
-  var import_graphology2 = __toESM(require_graphology_umd_min(), 1);
+  var import_graphology = __toESM(require_graphology_umd_min(), 1);
   function createRootNode(graph2, label, size, color) {
     graph2.addNode("quality-root", {
       label,
@@ -8451,6 +8438,68 @@ void main() {
   }
   function createEdges(graph2, edges) {
     edges.forEach((edge) => graph2.addEdge(edge.source, edge.target));
+  }
+  function getDefaultNodeColor(graph2, node) {
+    switch (graph2.getNodeAttribute(node, "qualityType")) {
+      case "property":
+        return "green";
+      case "quality":
+        return "blue";
+      default:
+        return "orange";
+    }
+  }
+
+  // src/graphs/events.js
+  function registerGraphEvents(graph2, renderer2) {
+    const graphName = graph2.getAttribute("name");
+    renderer2.on("doubleClickNode", (event) => {
+      if (event.node !== "quality-root") {
+        window.location.href = `${graph2.getNodeAttribute(event.node, "page")}`;
+      }
+    });
+    if (graphName === "home") {
+      renderer2.on("clickStage", () => {
+        window.location.href = "/full-quality-graph";
+      });
+    }
+    if (graphName !== "home") {
+      renderer2.on("enterNode", (event) => {
+        const hoveredNode = event.node;
+        graph2.forEachEdge((edgeId, _, sourceNode, targetNode) => {
+          const isRelated = sourceNode === hoveredNode || targetNode === hoveredNode;
+          graph2.updateEdgeAttribute(
+            edgeId,
+            "color",
+            () => isRelated ? "red" : "#E0E0E0"
+          );
+        });
+        graph2.forEachNode((node) => {
+          const isConnected = graph2.hasEdge(hoveredNode, node) || graph2.hasEdge(node, hoveredNode);
+          graph2.updateNodeAttribute(
+            node,
+            "color",
+            () => isConnected ? graph2.getNodeAttribute(node, "color") : "#CCCCCC"
+          );
+        });
+      });
+      renderer2.on("leaveNode", () => {
+        graph2.forEachEdge((edgeId) => {
+          graph2.updateEdgeAttribute(
+            edgeId,
+            "color",
+            () => DEFAULT_SETTINGS.defaultEdgeColor
+          );
+        });
+        graph2.forEachNode((node) => {
+          graph2.updateNodeAttribute(
+            node,
+            "color",
+            () => getDefaultNodeColor(graph2, node)
+          );
+        });
+      });
+    }
   }
 
   // src/graphs/homepage/main.js

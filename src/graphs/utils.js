@@ -42,3 +42,19 @@ export function createNodes(graph, nodes) {
 export function createEdges(graph, edges) {
   edges.forEach((edge) => graph.addEdge(edge.source, edge.target));
 }
+
+/**
+ * Determines the default color of a node, based on its quality type
+ * @param {MultiGraph} graph
+ * @param {string} node
+ */
+export function getDefaultNodeColor(graph, node) {
+  switch (graph.getNodeAttribute(node, "qualityType")) {
+    case "property":
+      return "green";
+    case "quality":
+      return "blue";
+    default:
+      return "orange";
+  }
+}
