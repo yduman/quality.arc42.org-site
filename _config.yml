@@ -132,4 +132,12 @@ exclude:
   - vendor/bundle
   - node_modules
   - package.json
+  - package-lock.json
+  - build.js
   - src/
+
+watch_exclude:
+  - assets/js/fullpage # handled by esbuild
+  - assets/js/homepage # handled by esbuild
+
+incremental: true
