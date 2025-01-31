@@ -5,6 +5,7 @@
   "author": "arc42",
   "license": "CC-BY-SA-4.0",
   "type": "module",
+  "private": true,
   "keywords": [
     "arc42",
     "isaqb",
