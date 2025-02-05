@@ -1,25 +1,24 @@
 import matter from "gray-matter";
-import fs from "node:fs";
+import { promises as fs } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-console.log(__dirname);
 const projectRoot = process.cwd();
 const qualitiesDir = path.join(projectRoot, "qualities");
 const requirementsDir = path.join(projectRoot, "requirements");
 
-const qualitiesFiles = getFilePaths(qualitiesDir).filter(
-  (filePath) => !filePath.includes("_files-must-have-identical-dates"),
-);
-const requirementFiles = getFilePaths(requirementsDir).filter(
-  (filePath) => !filePath.includes("_req-template-simple"),
-);
+let [qualityFiles, requirementFiles] = await Promise.all([
+  getFilePaths(qualitiesDir),
+  getFilePaths(requirementsDir),
+]);
 
-const qualityData = parseFrontmatter(qualitiesFiles);
-const requirementsData = parseFrontmatter(requirementFiles);
+qualityFiles = qualityFiles.filter((f) => !f.includes("_files-must-have-identical-dates"));
+requirementFiles = requirementFiles.filter((f) => !f.includes("_req-template-simple"));
+
+const [qualityData, requirementsData] = await Promise.all([
+  parseFrontmatter(qualityFiles),
+  parseFrontmatter(requirementFiles),
+]);
 
 console.log(qualityData.length);
 console.log(requirementsData.length);
@@ -27,37 +26,39 @@ console.log(requirementsData.length);
 /**
  * Parses the frontmatter data for a given Markdown file
  * @param {string[]} filePaths - Array of file paths
+ * @returns {Promise<Object[]>} - Array of frontmatter objects
  */
-function parseFrontmatter(filePaths) {
-  return filePaths.map((filePath) => {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const { data } = matter(content);
-
-    return {
-      ...data,
-    };
-  });
+async function parseFrontmatter(filePaths) {
+  return await Promise.all(
+    filePaths.map(async (filePath) => {
+      const content = await fs.readFile(filePath, "utf-8");
+      const { data } = matter(content);
+      return { ...data };
+    }),
+  );
 }
 
 /**
  * Recursively retrieves all markdown files for a given directory
  * @param {string} dir - The directory to search
- * @returns {string[]} Array of markdown file paths
+ * @returns {Promise<string[]>} Array of markdown file paths
  */
-function getFilePaths(dir) {
-  let result = [];
-  const files = fs.readdirSync(dir);
+async function getFilePaths(dir) {
+  const result = [];
+  const files = await fs.readdir(dir);
 
-  files.forEach((file) => {
+  const promises = files.map(async (file) => {
     const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
+    const stat = await fs.stat(filePath);
 
     if (stat.isDirectory()) {
-      result = result.concat(getFilePaths(filePath));
+      const nestedFiles = await getFilePaths(filePath);
+      result.push(...nestedFiles);
     } else if (filePath.endsWith(".md")) {
       result.push(filePath);
     }
   });
 
+  await Promise.all(promises);
   return result;
 }
