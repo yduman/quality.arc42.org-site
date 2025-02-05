@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "build": "node build.js",
-    "watch": "node build.js --watch"
+    "watch": "node build.js --watch",
+    "data": "node src/scripts/data.js"
   },
   "dependencies": {
     "graphology": "^0.25.4",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.24.2",
+    "gray-matter": "^4.0.3",
     "prettier": "^3.4.2"
   },
   "volta": {
