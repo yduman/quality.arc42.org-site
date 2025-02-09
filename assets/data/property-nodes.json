@@ -1,0 +1,66 @@
+[
+  {
+    "id": "usable",
+    "label": "Usable",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-usable"
+  },
+  {
+    "id": "operable",
+    "label": "Operable",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-operable"
+  },
+  {
+    "id": "reliable",
+    "label": "Reliable",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-reliable"
+  },
+  {
+    "id": "suitable",
+    "label": "Suitable",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-suitable"
+  },
+  {
+    "id": "efficient",
+    "label": "Efficient",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-efficient"
+  },
+  {
+    "id": "flexible",
+    "label": "Flexible",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-flexible"
+  },
+  {
+    "id": "safe",
+    "label": "Safe",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-safe"
+  },
+  {
+    "id": "secure",
+    "label": "Secure",
+    "size": 15,
+    "color": "green",
+    "qualityType": "property",
+    "page": "/tag-secure"
+  }
+]
